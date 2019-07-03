@@ -6,7 +6,7 @@ import ApplistingPosts from './ApplistingPosts';
 import AppBottom from './AppBottom';
 function Comment(props) {
   return (
-    <div className="center-block">
+    <div>
       <ApplistingPosts />
     </div>
   );

@@ -9,25 +9,11 @@ body {
   min-height:200px;
   margin: 10px;
   
-}
- 
-.listreactpost ol {
-  color: #ccc;
-  list-style-type: none;
-  border-top:10px solid lightgrey;
-  border-right:10px solid lightgrey;
-  border-left:10px solid lightgrey;
-  
   
 }
  
-.listreactpost ol li {
-  position: relative;
-  font: bold italic 45px/1.5 Helvetica, Verdana, sans-serif;
-  margin-bottom: 20px;
-  border-bottom:10px solid lightgrey;
-  min-height:150px;
-}
+
+ 
 
 .listreactpost ol li span{
 }
@@ -36,20 +22,17 @@ body {
 background-color:white;
 }
  
-.listreactpost li .pp {
-  font: 18px/1.5 Helvetica, sans-serif;
-  padding-left: 60px;
+li .pp {
+  font: 15px/1.5 Helvetica, sans-serif;
+  padding-left: 5px;
   color: #555;
 }
  
-.listreactpost span {
-  position: absolute;
-  border-top-color:white;
-}
+
 
 .deletepostcom{
     float:left;
-    margin-left:10px;
+    margin-left:0px;
 
 }
 
@@ -99,10 +82,10 @@ ul.pagination {
 .centered {
    text-align: center;
    font-size: 0;
-   margi:0;
    margin:0;
 
 }
+
 .centered > div {
    float: none;
    display: inline-block;
@@ -113,6 +96,8 @@ ul.pagination {
    margin-right:15%;  
    margin-bottom:100px;
 }
+
+
 
 .page-container {
   position: relative;
@@ -184,7 +169,9 @@ footer {
     width:500px;
     height:100px
 }
-
+.column{
+    width:40%;
+}
 
 .formspost submit{
     width:5%;
@@ -208,7 +195,10 @@ ul.commentsl li{
    list-style-type:none; 
 }
 ul.commentsl li{
-   font-size:16px; 
+   font-size:12px;
+   padding:10px;
+   height:100%;
+   margin-bottom:10px;
 }
 
 .norm{
@@ -219,10 +209,59 @@ ul.commentsl li{
     min-height:80px;
 }
 .listreactpost .userscomment{
-    min-height:150px;
+    min-height:50px;
 }
 
 .rghtbutton{
+    float:left;
+    margin-top:5px;
+    margin-bottom:5px;
+    padding:0;
+    width:100%;
+}
+
+.leftbutton{
     float:right;
-    margin-right:30px;
+    margin-top:5px;
+    margin-bottom:5px;
+    padding:0;
+}
+
+.overlay{
+    position:absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    background-color:black;
+    z-index:10000000000;
+    opacity: 0.5;
+}
+.overlay img{
+   height: 250px;
+   left: 50%;
+   margin-top: -125px;
+   margin-left: -125px;
+   position: absolute;
+   top: 50%;
+   width: 250px;   
+   z-index:100000000000;
+}
+@media only screen and (max-width: 768px) {
+
+ 
+ .centered > div {
+   width:98%;
+   margin-left:1%;
+   margin-right:1%;  
+}
+
+ .deletepostcom{
+   width:100%;
+ }
+ 
+ .leftbutton{
+    float:left;
+}
+ 
 }

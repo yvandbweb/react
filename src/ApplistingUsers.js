@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import Moment from 'react-moment';
 
 const API = 'https://ydbweb.com:8181/restdemo/userandcomsandposts';
+//const API = 'http://localhost:8080/userandcomsandposts';
 const DEFAULT_QUERY = '?search=';
 
 function create_UUID(){
@@ -21,7 +23,7 @@ class ApplistingUsers extends Component {
 
     this.state = {
       hits: [], displaycomments:[],displayposts:[],currentPage:1, todosPerPage:6,valuesrch: ''
-      ,activeIndex: null
+      ,activeIndex: null,loading:true
     };
     
     
@@ -37,9 +39,10 @@ class ApplistingUsers extends Component {
   }  
   
   loadposts(srch){
+    this.setState({ loading: true });
     fetch(API + DEFAULT_QUERY+srch)
       .then(response => response.json())
-      .then(data => this.setState({ hits: data }));  
+      .then(data => this.setState({ hits: data ,loading: false}));  
       
     for (let i = 0; i < this.state.todosPerPage; i++) { 
         this.state.displaycomments[i]=1;
@@ -49,13 +52,14 @@ class ApplistingUsers extends Component {
         this.state.displayposts[i]=1;
     }    
     
-    this.setState({valuesrch:""})
+    //this.setState({valuesrch:""})
       
   }
   
 
   componentDidMount() {
       this.loadposts("")
+     
 
   }
   
@@ -90,31 +94,23 @@ class ApplistingUsers extends Component {
   }
   
   showcomment(index){
-    this.state.displayposts[index]=1;     
-    this.setState({ displayposts:this.state.displayposts });      
+    this.hideall(index);   
     this.state.displaycomments[index]=2; 
     this.setState({ displaycomments:this.state.displaycomments });
   }
   
   hidecomment(index){
-    this.state.displaycomments[index]=2; 
-    this.setState({ displaycomments:this.state.displaycomments });
-    this.state.displayposts[index]=2;     
-    this.setState({ displayposts:this.state.displayposts });    
+    this.hideall(index);      
   }  
   
   showposts(index){
+    this.hideall(index);
     this.state.displayposts[index]=2; 
     this.setState({ displayposts:this.state.displayposts });
-        this.state.displaycomments[index]=1; 
-    this.setState({ displaycomments:this.state.displaycomments });
   }
   
   hideposts(index){
-    this.state.displayposts[index]=2;     
-    this.setState({ displayposts:this.state.displayposts });
-    this.state.displaycomments[index]=2; 
-    this.setState({ displaycomments:this.state.displaycomments });    
+    this.hideall(index);   
   }    
   
   hideall(index){
@@ -128,7 +124,13 @@ class ApplistingUsers extends Component {
     this.setState({ displaycomments:this.state.displaycomments }); 
     this.setState({ displayposts:this.state.displayposts });
    
-  }     
+  }  
+  
+  LoadingSpinner(){
+      return (
+              <div className="overlay"><img src={process.env.PUBLIC_URL + '/images/200.gif'} alt="Logo" /></div>
+      );
+  }
   
   Renduser(){
     const indexOfLastTodo = this.state.currentPage * this.state.todosPerPage;
@@ -156,18 +158,14 @@ class ApplistingUsers extends Component {
         return (
                 
                 
-        <div>
+            <div>
             <div className="topsrchcolor">
             <form onSubmit={this.handleSubmitSearch} className="form-inline onef">
             <div className="form-group">   
-                <label for="email">Search users:</label>
-              <input type="text" value={this.state.valuesrch} className="form-control" onChange={this.handleChangeSearch} />             
-              <input type="submit" value="Search" className="btn btn-default" />
-              </div>
-            </form>
-            <form onSubmit={this.handleReset} className="form-inline onef">
-              <div className="form-group">
-              <input type="submit" value="Reset" className="btn btn-default"/>
+                <label for="email">Search users&nbsp;</label>
+              <input type="text" value={this.state.valuesrch} className="form-check-input" onChange={this.handleChangeSearch} />             
+              <input type="submit" value="Search" className="btn form-check-input btn-default" />
+              <input type="button" value="Reset" onClick={ this.handleReset } className="btn form-check-input btn-default"/>
               </div>
             </form>
             <div class="clear"></div>
@@ -181,15 +179,15 @@ class ApplistingUsers extends Component {
 
             )}
             </ul> 
-            <div className="listreactpost">
-            {currentTodos.length==0 ?"No results found": null}
-            <ol>
+            { this.state.hits.length==0 ? "no results found": ""}
+            <div className="listreactpost">      
+            <ul className="list-group">
             {currentTodos.map((hit,index) =>
-              <li className="ppfirst usersli" key={hit.id}><span>{indexOfFirstTodo+index+1}.&nbsp;</span>
+              <li className="list-group-item d-flex justify-content-between align-items-center ppfirst usersli" key={hit.id}>
               <div className="pp">
                 <div className="ppfirst">
-                    <div className="postedby"><b>{hit.nameuser}</b></div><div className="postedby"> joinded on the <i>{hit.dateCreated}</i></div>
-                    <div class="rghtbutton">
+                    <div className="postedby"><b>{hit.nameuser}</b></div><div className="postedby"> &nbsp;joinded on the <i><Moment format="DD-MM-YYYY HH:mm">{hit.dateCreated}</Moment></i></div>
+                    <div class="leftbutton">
                         {( this.state.displaycomments[index]==1?
                         <div className="deletepostcom btn btn-success" onClick={ () => this.showcomment(index) }>show {hit.comments.length} Comments</div>
                                 :
@@ -208,7 +206,7 @@ class ApplistingUsers extends Component {
                 <ul className={ this.state.displaycomments[index]==1 ? "commentsl hide1" : "commentsl show1"} index={index}>          
                 {hit.comments.map(hit2 =>
                  <li className="userscomment" key={hit2.dateCreated} >
-                  <div className="postedby">Commented by: <b>{hit2.user.nameuser}</b></div><div className="postedby"> on the <i>{hit2.dateCreated}</i></div>
+                  <div className="postedby">Commented by: <b>{hit2.user.nameuser}</b></div><div className="postedby"> on the <i><Moment format="DD-MM-YYYY HH:mm">{hit2.dateCreated}</Moment></i></div>
                   <div className="clear"></div>
                   &nbsp;<span className="norm">{hit2.text} </span>                       
                   </li> 
@@ -217,7 +215,7 @@ class ApplistingUsers extends Component {
                 <ul className={ this.state.displayposts[index]==1 ? "commentsl hide1" : "commentsl show1"} index={index}> 
                 {hit.posts.map(hit2 =>
                  <li className="userscomment" key={hit2.dateCreated} >
-                  <div className="postedby">Posted by: <b>{hit2.user.nameuser}</b></div><div className="postedby"> on the <i>{hit2.dateCreated}</i></div>
+                  <div className="postedby">Posted by: <b>{hit2.user.nameuser}</b></div><div className="postedby"> on the <i><Moment format="DD-MM-YYYY HH:mm">{hit2.dateCreated}</Moment></i></div>
                   <div className="clear"></div>
                   &nbsp;<span className="norm">{hit2.txt} </span>                       
                   </li> 
@@ -226,7 +224,7 @@ class ApplistingUsers extends Component {
                </div>
                </li>          
             )}
-            </ol>
+            </ul>
             </div>
           </div>
     );
@@ -245,9 +243,10 @@ class ApplistingUsers extends Component {
   render() {
 
      
-    return (            
-        this.Renduser(
-        )
+    return (
+            <div>
+            {this.state.loading ? this.LoadingSpinner() : this.Renduser()}
+            </div>
     );
   }
 }

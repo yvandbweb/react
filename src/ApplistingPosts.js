@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import Moment from 'react-moment';
 
 const API = 'https://ydbweb.com:8181/restdemo/commentswithposts';
+//const API = 'http://localhost:8080//commentswithposts';
 const DEFAULT_QUERY = '?search=';
 
 function create_UUID(){
@@ -20,8 +22,8 @@ class ApplistingPosts extends Component {
     
 
     this.state = {
-      hits: [], displaycomments:[],currentPage:1, todosPerPage:3,valuesrch: ''
-      ,activeIndex: null
+      hits: [], displaycomments:[],currentPage:1, todosPerPage:6,valuesrch: ''
+      ,activeIndex: null,loading:true
     };
     
     
@@ -41,9 +43,10 @@ class ApplistingPosts extends Component {
   }  
   
   loadposts(srch){
+    this.setState({ loading: true });
     fetch(API + DEFAULT_QUERY+srch)
       .then(response => response.json())
-      .then(data => this.setState({ hits: data }));  
+      .then(data => this.setState({ hits: data ,loading: false}));  
       
     for (let i = 0; i < this.state.todosPerPage; i++) { 
         this.state.displaycomments[i]=1;
@@ -155,6 +158,12 @@ class ApplistingPosts extends Component {
     }
   }
   
+  LoadingSpinner(){
+      return (
+              <div className="overlay"><img src={process.env.PUBLIC_URL + '/images/200.gif'} alt="Logo" /></div>
+      );
+  }  
+  
   handleChangeSearch(event) {
     this.setState({valuesrch: event.target.value});
   }
@@ -188,12 +197,78 @@ class ApplistingPosts extends Component {
     }   
     this.setState({ displaycomments:this.state.displaycomments }); 
    
-  }   
+  }
+  
+bodyloop(arraylist,indexmaster,indexOfFirstTodo){
+      return (
+            <div className="listreactpost">
+            <ul class="list-group">
+            {arraylist.map((hit,index) =>
+              <li class="list-group-item d-flex justify-content-between align-items-center" key={hit.id}>              
+              <div className="pp">
+              <div className="postedby">Posted by: <b>{hit.user.nameuser}</b></div><div className="postedby"> &nbsp;on the <i><Moment format="DD-MM-YYYY HH:mm">{hit.dateCreated}</Moment></i></div>
+                <div class="rghtbutton">
+                    <div  className="deletepostcom btn btn-danger" onClick={ () => this.Deletepost(hit.id) }>delete</div>
+                    {( this.state.displaycomments[index+indexmaster]==1?
+                    <div className="deletepostcom btn btn-success" onClick={ () => this.showcomment(index+indexmaster) }>show {hit.comments.length} comments</div>
+                            :
+                    <div className="deletepostcom btn btn-warning" onClick={ () => this.hidecomment(index+indexmaster) }>hide</div>
+
+                    )}  
+                    <div className="deletepostcom btn btn-primary" onClick={ () => this.hideall(index+indexmaster) }>hide All</div>
+                    <div className="clear"></div>
+                </div>                
+                <div className="clear"></div>
+                <div className="txt1">{hit.txt}</div>
+                <div className="clear"></div>
+                <ul className={ this.state.displaycomments[index+indexmaster]==1 ? "commentsl list-group hide1" : "commentsl list-group show1"} index={index}>          
+                {hit.comments.map(hit2 =>
+                 <li key={hit2.dateCreated} >
+                  <div className="postedby">Commented by: <b>{hit2.user.nameuser}</b></div><div className="postedby"> on the <i><Moment format="DD-MM-YYYY HH:mm">{hit2.dateCreated}</Moment></i></div>
+                  <div className="clear"></div>
+                  <div  className="btn btn-danger" onClick={ () => this.Deletecomment(hit2.dateCreated,indexOfFirstTodo+index+indexmaster) }>delete</div>
+                  &nbsp;<span className="norm">{hit2.text} </span>                       
+                  </li> 
+                )} 
+                 <li>
+                <form onSubmit={this.handleSubmitComment(indexOfFirstTodo+index+indexmaster)}>
+                  <div class="form-group">
+                  <label>
+                    Write a comment:</label>
+                    <textarea class="form-control" onChange={this.handleChangeComment} />
+
+                  <input type="submit" value="Submit" class="btn btn-default" />
+                  </div>
+                </form>  
+                </li>
+               </ul>
+               </div>
+               </li>
+
+
+          
+            )}
+            </ul>
+            </div>   
+    )
+  }
   
   Rendpost(){
     const indexOfLastTodo = this.state.currentPage * this.state.todosPerPage;
     const indexOfFirstTodo = indexOfLastTodo - this.state.todosPerPage;
     const currentTodos = this.state.hits.slice(indexOfFirstTodo, indexOfLastTodo);
+    
+    const col1 = [],col2 = [];
+
+    currentTodos.map((hit,index) => {
+        if(index<Math.ceil(currentTodos.length/2)){
+            col1.push(hit);
+        }else{
+            col2.push(hit);
+        }
+    });  
+    
+    console.log(col1);
     
     
     const pageNumbers = [];
@@ -212,19 +287,16 @@ class ApplistingPosts extends Component {
         return (
                 
                 
+    
         <div>
             <div className="topsrchcolor">
             <form onSubmit={this.handleSubmitSearch} className="form-inline onef">
             <div className="form-group">   
-                <label for="email">Search posts:</label>
-              <input type="text" value={this.state.valuesrch} className="form-control" onChange={this.handleChangeSearch} />             
-              <input type="submit" value="Search" className="btn btn-default" />
-              </div>
-            </form>
-            <form onSubmit={this.handleReset} className="form-inline onef">
-              <div className="form-group">
-              <input type="submit" value="Reset" className="btn btn-default"/>
-              </div>
+              <label for="email">Search posts&nbsp;</label>
+              <input type="text" value={this.state.valuesrch} className="form-check-input" onChange={this.handleChangeSearch} />             
+              <input type="submit" value="Search" className="form-check-input btn btn-default" />
+              <input type="button" onClick={ this.handleReset } value="Reset" className="form-check-input btn btn-default"/>
+            </div>
             </form>
             <div class="clear"></div>
             </div>
@@ -237,67 +309,34 @@ class ApplistingPosts extends Component {
 
             )}
             </ul> 
-            {currentTodos.length==0 ?"No results found":
-            <form onSubmit={this.handleSubmitPost}>
-              <div class="form-group">
-              <label>
-                Write a post:
-                <textarea value={this.state.value} class="form-control formextarea" onChange={this.handleChangePost} />
-              </label>
-              </div>
-              <input type="submit" value="Submit" className="btn btn-default" />
-            </form> 
-            }
-            <div className="listreactpost">
-            <ol>
-            {currentTodos.map((hit,index) =>
-              <li key={hit.id}><span>{indexOfFirstTodo+index+1}.&nbsp;</span>              
-              <div className="pp">
-                <div className="postedby">Posted by: <b>{hit.user.nameuser}</b></div><div className="postedby"> on the <i>{hit.dateCreated}</i></div>
-                <div class="rghtbutton">
-                    <div  className="deletepostcom btn btn-danger" onClick={ () => this.Deletepost(hit.id) }>delete</div>
-                    {( this.state.displaycomments[index]==1?
-                    <div className="deletepostcom btn btn-success" onClick={ () => this.showcomment(index) }>show {hit.comments.length} comments</div>
-                            :
-                    <div className="deletepostcom btn btn-warning" onClick={ () => this.hidecomment(index) }>hide</div>
-
-                    )}  
-                    <div className="deletepostcom btn btn-primary" onClick={ () => this.hideall(index) }>hide All</div>
-                    <div className="clear"></div>
-                </div>                
-                <div className="clear"></div>
-                <div className="txt1">{hit.txt}</div>
-                <div className="clear"></div>
-                <ul className={ this.state.displaycomments[index]==1 ? "commentsl hide1" : "commentsl show1"} index={index}>          
-                {hit.comments.map(hit2 =>
-                 <li key={hit2.dateCreated} >
-                  <div className="postedby">Commented by: <b>{hit2.user.nameuser}</b></div><div className="postedby"> on the <i>{hit2.dateCreated}</i></div>
-                  <div className="clear"></div>
-                  <div  className="btn btn-danger" onClick={ () => this.Deletecomment(hit2.dateCreated,indexOfFirstTodo+index) }>delete</div>
-                  &nbsp;<span className="norm">{hit2.text} </span>                       
-                  </li> 
-                )} 
-                 <li>
-                <form onSubmit={this.handleSubmitComment(indexOfFirstTodo+index)} className="">
-                  <div class="form-group">
-                  <label>
-                    Write a comment:</label>
-                    <textarea class="form-control formextarea" onChange={this.handleChangeComment} />
-
-                  <input type="submit" value="Submit" class="btn btn-default" />
-                  </div>
-                </form>  
-                </li>
-               </ul>
-               </div>
-               </li>
-
-
-          
-            )}
-            </ol>
+            <div className="row">
+                <div className="col-sm-6">
+                    { this.state.hits.length==0 ? "no results found": 
+                    <form onSubmit={this.handleSubmitPost}>
+                      <div class="form-group">
+                        <label>
+                            Write a post:
+                        </label>
+                        <textarea value={this.state.value} class="form-control" onChange={this.handleChangePost} />              
+                      </div>
+                      <input type="submit" value="Submit" className="btn btn-default" />
+                    </form>
+                    }
+                </div>
             </div>
-          </div>
+            
+            
+            <div className="row">
+              <div className="col-sm-6">            
+                {this.bodyloop(col1,0,indexOfFirstTodo)}
+              </div>
+              <div className="col-sm-6">            
+                {this.bodyloop(col2,Math.ceil(currentTodos.length/2),indexOfFirstTodo)}
+              </div>
+            </div>
+            </div>
+
+         
     );
   } 
   
@@ -314,9 +353,10 @@ class ApplistingPosts extends Component {
   render() {
 
      
-    return (            
-        this.Rendpost(
-        )
+    return (  
+            <div>
+            {this.state.loading ? this.LoadingSpinner() : this.Rendpost()}
+            </div>            
     );
   }
 }

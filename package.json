@@ -2,10 +2,12 @@
   "name": "react1",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://ydbweb.com/react",  
+  "homepage": "https://ydbweb.com/react",
   "dependencies": {
+    "moment": "^2.24.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-moment": "^0.9.2",
     "react-router": "^5.0.1",
     "react-router-config": "^5.0.1",
     "react-router-dom": "^5.0.1",
