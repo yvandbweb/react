@@ -10,9 +10,10 @@
     <div class="page-container">
         <div id="root" className="content-wrap"></div>    
             <footer className="fixed-bottom">
-              <div className="footer-copyright text-center py-3">© 2020 Copyright:
+              <div className="footer-copyright text-center py-3">© <span id="yy"></span> Copyright:
                 ydbweb.com
-              </div>
+              </div>                
+              <script>document.getElementById("yy").innerHTML=new Date().getFullYear()</script>
             </footer>
         </div>
 
