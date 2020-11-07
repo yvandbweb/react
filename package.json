@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://ydbweb.com/react",
   "dependencies": {
+    "build": "^0.1.4",
     "moment": "^2.24.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
