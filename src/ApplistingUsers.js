@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Moment from 'react-moment';
 
-const API = 'https://ydbweb.com:8181/restdemo/userandcomsandposts';
+//const API = "http://localhost:8585/symfonywebsrv/public/index.php/userandcomsandposts";
+const API = "https://ydbweb.com/symfonywebsrv/public/index.php/userandcomsandposts";
 //const API = 'http://localhost:8080/userandcomsandposts';
 const DEFAULT_QUERY = '?search=';
 

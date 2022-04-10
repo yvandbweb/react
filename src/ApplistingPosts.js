@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Moment from 'react-moment';
 
-const API = 'https://ydbweb.com:8181/restdemo/commentswithposts';
-//const API = 'http://localhost:8080//commentswithposts';
+//const API = "http://localhost:8585/symfonywebsrv/public/index.php/commentswithposts";
+const API = "https://ydbweb.com/symfonywebsrv/public/index.php/commentswithposts";
 const DEFAULT_QUERY = '?search=';
 
 function create_UUID(){
