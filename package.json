@@ -2,7 +2,7 @@
   "name": "react1",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://ydbweb.com/react",
+  "homepage": "https://ydbweb.com/react2",
   "dependencies": {
     "build": "^0.1.4",
     "moment": "^2.24.0",

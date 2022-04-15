@@ -8,12 +8,12 @@ body {
 .listreactpost {
   min-height:200px;
   margin: 10px;
-  
-  
-}
- 
 
- 
+
+}
+
+
+
 
 .listreactpost ol li span{
 }
@@ -21,13 +21,13 @@ body {
 .listreactpost:hover{
 background-color:white;
 }
- 
+
 li .pp {
   font: 15px/1.5 Helvetica, sans-serif;
   padding-left: 5px;
   color: #555;
 }
- 
+
 
 
 .deletepostcom{
@@ -50,6 +50,7 @@ li .pp {
 .postedby{
     float:left;
     font-weight:bold;
+    font-size:12px;
 }
 
 .deletepostcom #nav span:after{
@@ -58,7 +59,7 @@ li .pp {
 
 ul.pagination {
   display: inline-block;
-  
+
 }
 
 .pagination li {
@@ -91,10 +92,7 @@ ul.pagination {
    display: inline-block;
    text-align: left;
    font-size: 13px;
-   width:70%;
-   margin-left:15%;
-   margin-right:15%;  
-   margin-bottom:100px;
+   width:100%;
 }
 
 
@@ -107,14 +105,13 @@ ul.pagination {
 }
 
 .content-wrap {
-  padding-bottom: 50px;    /* Footer height */
 }
 
 footer {
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 50px;  
+  height: 50px;
   text-align:center;
   background-color: black;
   color:white;
@@ -145,7 +142,7 @@ footer {
     color:white;
     display: inline-block;
     margin-right:30px;
-    
+
 }
 
 .row1 ul li a{
@@ -186,13 +183,13 @@ footer {
 .topsrchcolor{
     background-color: #f2f1f0;
     padding-bottom:20px;
-    
+
 }
 ul.commentsl{
-   margin-top:10px;; 
+   margin-top:10px;;
 }
 ul.commentsl li{
-   list-style-type:none; 
+   list-style-type:none;
 }
 ul.commentsl li{
    font-size:12px;
@@ -244,29 +241,35 @@ ul.commentsl li{
    margin-left: -125px;
    position: absolute;
    top: 50%;
-   width: 250px;   
+   width: 250px;
    z-index:100000000000;
 }
 @media only screen and (max-width: 768px) {
 
- 
+
  .centered > div {
    width:98%;
    margin-left:1%;
-   margin-right:1%;  
+   margin-right:1%;
 }
 
  .deletepostcom{
    width:100%;
  }
- 
+
  .leftbutton{
     float:left;
 }
- 
+
 }
 
 .row {
     margin-right: 0 ! important;
     margin-left: 0 ! important;
+}
+
+.ul1 li {
+    display: inline;
+    margin-right: 20px;
+    font-size: 12px;
 }
